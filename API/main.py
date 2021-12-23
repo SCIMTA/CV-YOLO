@@ -37,4 +37,5 @@ async def _detect(files: UploadFile = File(...)):
         cv2.imwrite(img_path,img)
         return FileResponse(img_path)
     except Exception as e:
+        print(f'err: {e}')
         return on_fail(e.__str__())
