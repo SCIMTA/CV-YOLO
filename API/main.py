@@ -3,7 +3,8 @@ import numpy as np
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
 import cv2
-from yolov5 import yolo_model,detech_frame
+from yolov5 import yolov5_model,detech_frame_v5
+from yolov4 import yolov4_model,detech_frame_v4
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(redoc_url=None)
@@ -46,12 +47,15 @@ async def _image(image:str):
 
 
 @app.post("/detect")
-async def _detect(files: UploadFile = File(...)):
+async def _detect(files: UploadFile = File(...),ver:int=5):
     try:
         contents = await files.read()
         nparr = np.fromstring(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        img = detech_frame(img,yolo_model)
+        if ver == 4:
+            img = detech_frame_v4(img, yolov4_model)
+        else:
+            img = detech_frame_v5(img,yolov5_model)
         image_name = str(time.time())
         img_path = f"./detected_image/{image_name}.jpg"
         cv2.imwrite(img_path,img)

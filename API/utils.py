@@ -80,8 +80,8 @@ def check_iou(list_box):
         #     if check_include(box2, list_box):
         #         list_box.remove(box2)
         #         print(box2)
-        print(len(list_box))
-    print(len(new_list_box))
+        # print(len(list_box))
+    # print(len(new_list_box))
     # print(f'len(list_box) = {type(list_box)}')
     # print(new_list_box)
     return new_list_box

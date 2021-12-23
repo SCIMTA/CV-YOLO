@@ -19,13 +19,22 @@
             $("#loading").hide();
         }
 
+        let yolo_version = 5;
+        let current_file = null;
+        const onSelectYolo = ver => {
+            yolo_version = ver
+            if (current_file)
+                callApi(current_file)
+        }
+
         const callApi = (file) => {
+            current_file = file;
             $("#loading").show();
             var form = new FormData();
             form.append("files", file, file.name);
 
             var settings = {
-                "url": "http://127.0.0.1:8000/detect",
+                "url": `http://127.0.0.1:8000/detect?ver=${yolo_version}`,
                 "method": "POST",
                 "timeout": 0,
                 "processData": false,
@@ -37,7 +46,7 @@
             $.ajax(settings).done(function (response) {
                 $('#yoloImage').attr('src', JSON.parse(response).image);
                 $("#loading").hide();
-
+                $(".file-upload-input")[0].files = new DataTransfer().files
             });
         }
 
@@ -80,10 +89,24 @@
 
 <body>
     <div class="loading" id="loading"></div>
+
+
     <div
         style="display: flex;flex: 1;flex-direction: column;text-align: center;width: 100%;justify-content: center;align-items: center;">
         <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Chọn
             ảnh</button>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="yolo" id="yolov5" onchange="onSelectYolo(5)" checked>
+            <label class="form-check-label" for="yolov5">
+                YoloV5
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="yolo" id="yolov4" onchange="onSelectYolo(4)">
+            <label class="form-check-label" for="yolov4">
+                YoloV4
+            </label>
+        </div>
         <div class="image-upload-wrap">
             <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
             <div class="drag-text">

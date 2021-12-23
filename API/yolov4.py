@@ -16,7 +16,7 @@ print("Loaded model")
 yolov4_model = cv2.dnn_DetectionModel(net)
 yolov4_model.setInputParams(size=(416, 416), scale=1/255, swapRB=True)
 
-def detech_frame(frame,model):
+def detech_frame_v4(frame,model):
     classes, scores, boxes = model.detect(frame, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
     for (classid, score, box) in zip(classes, scores, boxes):
         color = COLORS[int(classid) % len(COLORS)]
