@@ -1,0 +1,43 @@
+import cv2
+import time
+import numpy as np
+
+from utils import iou_cal
+CONFIDENCE_THRESHOLD = 0.7
+NMS_THRESHOLD = 0.4
+COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
+
+class_names = []
+with open("classes.txt", "r") as f:
+    class_names = [cname.strip() for cname in f.readlines()]
+
+yolo_model = cv2.dnn.readNetFromONNX("./yolov5.onnx")
+
+print("Loaded model")
+
+def detech_frame(frame,model):
+    list_box = []
+    blob = cv2.dnn.blobFromImage(frame, 1 / 255, (640, 640), swapRB=True)
+    model.setInput(blob)
+    w,h = frame.shape[1],frame.shape[0]
+    w /= 640
+    h /= 640
+    img = model.forward()
+    for val in img[0]:
+        val[..., 0] *= w
+        val[..., 1] *= h
+        val[..., 2] *= w
+        val[..., 3] *= h
+        
+        xmin,ymin,xmax,ymax,confidence,class_0,class_1 = val
+        if confidence > CONFIDENCE_THRESHOLD:
+            list_box.append(val)
+
+
+        # classid = 0 if class_0 > class_1 else 1
+        # box = xmin -10 ,ymin-10,xmax,ymax-10
+        # color = COLORS[int(classid) % len(COLORS)]
+        # label = "{} {}".format(class_names[classid], confidence)
+        # cv2.rectangle(frame, box, color, 1)
+        # cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+    return frame
