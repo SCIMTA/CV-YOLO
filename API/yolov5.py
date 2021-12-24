@@ -41,7 +41,7 @@ def detech_frame_v5(frame, model):
     for box in list_box:
         xmin, ymin, xmax, ymax, confidence, class_0, class_1 = box
         classid = 0 if class_0 > class_1 else 1
-        box = int(xmin - 10), int(ymin - 10), int(xmax), int(ymax - 10)
+        box = int(xmin - 25), int(ymin - 25), int(xmax - 10), int(ymax - 25)
         color = COLORS[int(classid) % len(COLORS)]
         label = "{} {}".format(class_names[classid], confidence)
         cv2.rectangle(frame, box, color, 1)
@@ -49,4 +49,3 @@ def detech_frame_v5(frame, model):
     # print(len(list_box))
 
     return frame
-
